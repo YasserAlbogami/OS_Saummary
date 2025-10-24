@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operating Systems Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 1rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        header .header-text {
+            flex: 1;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        header h2 {
+            font-size: 1rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        header h2 span {
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+
+        header .linkedin-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        header .linkedin-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        header .linkedin-link:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
+
+        header .linkedin-logo {
+            width: 32px;
+            height: 32px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .notice {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 0.75rem 1rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-1px);
+        }
+
+        .btn:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .toc-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .toc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toc-header h2 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .toc-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .toc-content {
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .toc-content.collapsed {
+            display: none;
+        }
+
+        .toc-content nav ol {
+            list-style: none;
+            counter-reset: item;
+        }
+
+        .toc-content nav ol li {
+            counter-increment: item;
+            margin: 0.5rem 0;
+        }
+
+        .toc-content nav ol li::before {
+            content: counters(item, ".") ". ";
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .toc-content nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .toc-content nav a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .toc-content nav a:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+            border-radius: 2px;
+        }
+
+        .toc-content nav ol ol {
+            margin-left: 1.5rem;
+            margin-top: 0.25rem;
+        }
+
+        main {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .content h1, .content h2, .content h3, .content h4 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            scroll-margin-top: 100px;
+        }
+
+        .content h1 {
+            font-size: 2rem;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .content h2 {
+            font-size: 1.75rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        .content h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .content h4 {
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+        }
+
+        .content ul, .content ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .content strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .content em {
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .content code {
+            background-color: #f4f4f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.9em;
+            color: #d63384;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            header h2 {
+                font-size: 0.9rem;
+            }
+
+            header .header-content {
+                justify-content: center;
+                text-align: center;
+            }
+
+            main {
+                padding: 1.5rem;
+            }
+
+            .content h1 {
+                font-size: 1.75rem;
+            }
+
+            .content h2 {
+                font-size: 1.5rem;
+            }
+
+            .content h3 {
+                font-size: 1.25rem;
+            }
+
+            .content h4 {
+                font-size: 1.1rem;
+            }
+
+            .toc-content {
+                max-height: none;
+            }
+
+            .toc-content.collapsed {
+                display: none;
+            }
+        }
+
+        @media print {
+            header, .controls, .notice, .toc-container {
+                display: none;
+            }
+
+            body {
+                background-color: white;
+            }
+
+            main {
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .content h1, .content h2, .content h3, .content h4 {
+                page-break-after: avoid;
+            }
+
+            .content p, .content li {
+                orphans: 3;
+                widows: 3;
+            }
+        }
+
+        :focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="header-text">
+                <h1>OS Summary from set slides 1-8</h1>
+                <h2>&copy;Made by<span>Yasser.A Albogami</span></h2>
+            </div>
+            <a href="https://www.linkedin.com/in/yasser-albogami-650240291/" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="linkedin-link"
+               aria-label="Visit Yasser Albogami's LinkedIn profile">
+                <svg class="linkedin-logo" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="notice">
+            <strong>Notice:</strong> Double Check it 📍.
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="copyBtn" aria-label="Copy content to clipboard">📋 Copy to Clipboard</button>
+            <button class="btn" id="printBtn" aria-label="Print document">🖨️ Print</button>
+        </div>
+
+        <div class="toc-container">
+            <div class="toc-header" id="tocHeader" role="button" tabindex="0" aria-expanded="true" aria-controls="tocContent">
+                <h2>Table of Contents</h2>
+                <button class="toc-toggle" id="tocToggle" aria-label="Toggle table of contents">−</button>
+            </div>
+            <div class="toc-content" id="tocContent">
+                <nav aria-label="Table of contents">
+                    <ol>
+                        <li><a href="#heading-0">I. Operating System Fundamentals and Structure</a></li>
+                        <li><a href="#heading-1">II. OS Subsystems and Management</a>
+                            <ol>
+                                <li><a href="#heading-2">Process Management</a></li>
+                                <li><a href="#heading-3">Memory and Storage Management</a></li>
+                                <li><a href="#heading-4">I/O Management</a></li>
+                            </ol>
+                        </li>
+                        <li><a href="#heading-5">III. CPU Scheduling Policies</a>
+                            <ol>
+                                <li><a href="#heading-6">Specific Scheduling Algorithms</a></li>
+                            </ol>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <main>
+            <article class="content">
+                <p>This is a comprehensive summary drawn from the provided sources, covering the fundamental concepts of operating systems, process management, system organization, and detailed CPU scheduling algorithms.</p>
+
+<h3 id="heading-0">I. Operating System Fundamentals and Structure</h3>
+
+<p>An Operating System (OS) is defined as a program that functions as an intermediary between a user of a computer and the computer hardware. The primary goals of an OS are to execute user programs, make solving user problems easier, make the computer system convenient to use, and utilize the computer hardware efficiently.</p>
+
+<p>A computer system generally consists of four main components: hardware (e.g., CPU, memory, I/O devices), the operating system, application programs (e.g., compilers, web browsers, word processors), and users (people, machines, or other computers). The OS controls and coordinates the use of hardware among various applications and users, providing the means for the proper use of system resources.</p>
+
+<p>OS features are typically viewed from two perspectives:</p>
+
+<ol>
+<li><strong>User View:</strong> This perspective varies based on the interface utilized. For single-user systems (like PCs), the goal is to maximize the user's work/play, prioritizing ease of use and good performance. For multi-user systems (like mainframes), the goal shifts to maximizing resource utilization and ensuring fair resource sharing. Handheld and embedded systems prioritize usability/battery life and running without user intervention, respectively.</li>
+<li><strong>System View:</strong> From the computer's perspective, the OS is intimately involved with the hardware. It acts as a <strong>resource allocator</strong>, managing all resources and deciding between conflicting requests for efficient and fair resource use. It is also a <strong>control program</strong>, preventing errors and improper use of the computer by controlling program execution.</li>
+</ol>
+
+<p>A common technical definition is that the OS is the one program running at all times on the computer, usually referred to as the <strong>kernel</strong>. Along with the kernel, system programs and application programs exist. Mobile operating systems often include middleware—software frameworks providing services like databases and multimedia—in addition to the core kernel (e.g., Apple's iOS and Google's Android).</p>
+
+<p>Modern systems leverage techniques like:</p>
+<ul>
+<li><strong>Multiprogramming (Batch system):</strong> Organizes jobs so the CPU always has one to execute, increasing efficiency by switching jobs when one must wait (e.g., for I/O).</li>
+<li><strong>Timesharing (Multitasking):</strong> A logical extension where the CPU switches jobs so rapidly that users experience interactive computing, typically requiring response times under 1 second. This involves CPU scheduling and, potentially, swapping and virtual memory if processes do not fit entirely in memory.</li>
+<li><strong>Dual-mode operation:</strong> Uses user mode and kernel mode (distinguished by a hardware mode bit) to protect the OS and system components, designating certain instructions as privileged (only executable in kernel mode).</li>
+</ul>
+
+<h3 id="heading-1">II. OS Subsystems and Management</h3>
+
+<p>The OS manages several critical subsystems:</p>
+
+<h4 id="heading-2">Process Management</h4>
+<p>A <strong>process</strong> is an active entity representing a program in execution, contrasted with a program, which is a passive entity. A process requires resources (CPU, memory, I/O, files) and consists of sections like the text section (program code), program counter, stack (temporary data), data section (global variables), and heap (dynamically allocated memory).</p>
+
+<p>The operating system manages processes by:</p>
+<ul>
+<li>Creating and deleting user and system processes.</li>
+<li>Suspending and resuming processes.</li>
+<li>Providing mechanisms for synchronization, communication, and deadlock handling.</li>
+</ul>
+
+<p>Each process is represented by a <strong>Process Control Block (PCB)</strong>, or Task Control Block, which holds all information required for successful execution, including process state, program counter, CPU registers, CPU scheduling information, memory management information, and I/O status information.</p>
+
+<p>Processes are created (using calls like <code>fork()</code> in UNIX/Linux) and terminated (using <code>exit()</code>). Termination releases the process's resources. A parent process can also terminate children (cascading termination) or wait for a child to terminate using <code>wait()</code>.</p>
+
+<p><strong>Inter Process Communication (IPC)</strong> allows cooperating processes to share information, speed up computation, achieve modularity, and provide convenience. IPC relies on two main models:</p>
+<ol>
+<li><strong>Shared Memory:</strong> An area of memory shared among communicating processes, with synchronization mechanisms typically handled by user processes rather than the OS.</li>
+<li><strong>Message Passing:</strong> Processes communicate using <code>send(message)</code> and <code>receive(message)</code> operations, without resorting to shared variables. Communication links can be physical (shared memory, hardware bus, network) or logical (direct/indirect, synchronous/asynchronous, buffered).</li>
+</ol>
+
+<p><strong>Threads</strong> allow multiple tasks within an application to run concurrently, making applications multithreaded. Thread creation is "light-weight" and cheaper than process creation, offering benefits in responsiveness, resource sharing, economy, and scalability (especially on multiprocessor architectures). Threads exist as user threads (managed by libraries like POSIX Pthreads or Windows threads) and kernel threads (supported by the OS kernel, e.g., Linux, Windows).</p>
+
+<h4 id="heading-3">Memory and Storage Management</h4>
+<p>Memory Management involves determining what resides in memory and when, aiming to optimize CPU utilization and response time. Activities include tracking memory usage, deciding which processes/data move into or out of memory, and allocating/deallocating space.</p>
+
+<p>Storage Management provides a uniform, logical view of information storage (the <em>file</em>), abstracting physical properties. The OS manages file systems (creating/deleting files/directories, access control, mapping files onto secondary storage, and backup). Mass storage, typically hard disks or Solid-State Disks (SSDs), is managed by the OS through free-space management, storage allocation, and disk scheduling, as the overall speed of computer operation depends heavily on the disk subsystem.</p>
+
+<p><strong>Caching</strong> is a crucial technique where frequently used information is copied temporarily from slower to faster storage to improve performance.</p>
+
+<h4 id="heading-4">I/O Management</h4>
+<p>The I/O subsystem hides the peculiarities of hardware devices from the user. It handles I/O memory management (buffering, caching, spooling) and provides general device-driver interfaces along with specific drivers for hardware devices.</p>
+
+<h3 id="heading-5">III. CPU Scheduling Policies</h3>
+
+<p>CPU scheduling is necessary to maximize CPU utilization in multiprogramming environments. Process execution follows a CPU–I/O Burst Cycle. Processes transition through states (new, running, waiting, ready, terminated).</p>
+
+<p><strong>Schedulers</strong> include:</p>
+<ul>
+<li><strong>Long-term scheduler (Job scheduler):</strong> Selects processes for the ready queue; controls the degree of multiprogramming and is invoked infrequently.</li>
+<li><strong>Short-term scheduler (CPU scheduler):</strong> Selects the next process to execute and allocates the CPU; must be very fast as it is invoked frequently.</li>
+<li><strong>Medium-term scheduler:</strong> Handles swapping by moving processes out of and back into memory.</li>
+</ul>
+
+<p><strong>The Dispatcher</strong> gives control of the CPU to the process selected by the short-term scheduler, performing context switching and jumping to the correct restart location.</p>
+
+<p><strong>Scheduling Criteria</strong> aim for optimization, typically maximizing CPU utilization and throughput, and minimizing turnaround time, waiting time, and response time. Key formulas include:</p>
+
+<ul>
+<li>Turnaround Time (T.A.T) = Completion Time (C.T) – Arrival Time (A.T).</li>
+<li>Wait Time (W.T) = T.A.T – Burst Time.</li>
+<li>Throughput = Total # of processes / Total Time for execution.</li>
+</ul>
+
+<h4 id="heading-6">Specific Scheduling Algorithms</h4>
+
+<ol>
+<li><strong>First Come First Serve (FCFS):</strong> A non-preemptive policy where the job that arrives first in the ready queue is picked first by the CPU. While easy to implement, it suffers from the <strong>Convoy Effect</strong>, where shorter jobs wait behind long jobs.</li>
+
+<li><strong>Shortest Job First (SJF):</strong> A non-preemptive policy where the job with the smallest CPU burst time is picked first. <strong>SJF is optimal</strong>, providing the minimum average waiting time for a given set of processes, and avoids the Convoy Effect. The main challenge is predicting the length of the next CPU burst.</li>
+
+<li><strong>Shortest Remaining Time First (SRTF):</strong> This is the preemptive version of SJF. The CPU is de-allocated as soon as a new job arrives with a smaller remaining burst time. Smaller jobs benefit significantly, but jobs with a bigger burst time may face starvation.</li>
+
+<li><strong>Priority Scheduling:</strong> A priority number (integer) is associated with each process, and the CPU is allocated to the process with the highest priority (often defined as the smallest integer). It can be preemptive or non-preemptive. SJF is a form of priority scheduling where priority is the inverse of the predicted CPU burst time. The major disadvantage is <strong>starvation</strong> for low-priority processes, which can be solved through <strong>Aging</strong> (increasing the priority of a process as time progresses).</li>
+
+<li><strong>Round Robin (RR):</strong> A preemptive policy where each process receives a small unit of CPU time, called a time quantum ($q$) (usually 10–100 milliseconds). If the process does not finish within $q$, it is preempted and resubmitted to the ready queue. RR ensures no process starves. The performance depends heavily on the selection of $q$; a large $q$ causes it to behave like FCFS, while a small $q$ increases context switch overhead.</li>
+
+<li><strong>Multilevel Queues (MLQ):</strong> The ready queue is permanently partitioned into separate queues, often based on process type (e.g., Foreground/Interactive and Background/Batch). Each queue can have its own scheduling algorithm (e.g., RR for foreground, FCFS for background). Scheduling also occurs between queues, typically using fixed priority (which can lead to starvation for lower-priority queues) or a time slice approach.</li>
+
+<li><strong>Multilevel Feedback Queues (MLFQ):</strong> Similar to MLQ, but processes can move between the queues. This mobility allows aging to be implemented. MLFQ is defined by several parameters, including the number of queues, the scheduling algorithm for each queue, and the methods used to determine when to upgrade or demote a process. The last queue typically uses FCFS.</li>
+</ol>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        // Table of Contents toggle
+        const tocHeader = document.getElementById('tocHeader');
+        const tocToggle = document.getElementById('tocToggle');
+        const tocContent = document.getElementById('tocContent');
+
+        function toggleTOC() {
+            const isExpanded = tocContent.classList.toggle('collapsed');
+            tocToggle.textContent = isExpanded ? '+' : '−';
+            tocHeader.setAttribute('aria-expanded', !isExpanded);
+        }
+
+        tocHeader.addEventListener('click', toggleTOC);
+        tocHeader.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleTOC();
+            }
+        });
+
+        // Copy to clipboard
+        const copyBtn = document.getElementById('copyBtn');
+        const originalContent = `This is a comprehensive summary drawn from the provided sources, covering the fundamental concepts of operating systems, process management, system organization, and detailed CPU scheduling algorithms.
+
+### I. Operating System Fundamentals and Structure
+
+An Operating System (OS) is defined as a program that functions as an intermediary between a user of a computer and the computer hardware. The primary goals of an OS are to execute user programs, make solving user problems easier, make the computer system convenient to use, and utilize the computer hardware efficiently.
+
+A computer system generally consists of four main components: hardware (e.g., CPU, memory, I/O devices), the operating system, application programs (e.g., compilers, web browsers, word processors), and users (people, machines, or other computers). The OS controls and coordinates the use of hardware among various applications and users, providing the means for the proper use of system resources.
+
+OS features are typically viewed from two perspectives:
+
+1.  **User View:** This perspective varies based on the interface utilized. For single-user systems (like PCs), the goal is to maximize the user's work/play, prioritizing ease of use and good performance. For multi-user systems (like mainframes), the goal shifts to maximizing resource utilization and ensuring fair resource sharing. Handheld and embedded systems prioritize usability/battery life and running without user intervention, respectively.
+2.  **System View:** From the computer's perspective, the OS is intimately involved with the hardware. It acts as a **resource allocator**, managing all resources and deciding between conflicting requests for efficient and fair resource use. It is also a **control program**, preventing errors and improper use of the computer by controlling program execution.
+
+A common technical definition is that the OS is the one program running at all times on the computer, usually referred to as the **kernel**. Along with the kernel, system programs and application programs exist. Mobile operating systems often include middleware—software frameworks providing services like databases and multimedia—in addition to the core kernel (e.g., Apple's iOS and Google's Android).
+
+Modern systems leverage techniques like:
+*   **Multiprogramming (Batch system):** Organizes jobs so the CPU always has one to execute, increasing efficiency by switching jobs when one must wait (e.g., for I/O).
+*   **Timesharing (Multitasking):** A logical extension where the CPU switches jobs so rapidly that users experience interactive computing, typically requiring response times under 1 second. This involves CPU scheduling and, potentially, swapping and virtual memory if processes do not fit entirely in memory.
+*   **Dual-mode operation:** Uses user mode and kernel mode (distinguished by a hardware mode bit) to protect the OS and system components, designating certain instructions as privileged (only executable in kernel mode).
+
+### II. OS Subsystems and Management
+
+The OS manages several critical subsystems:
+
+#### Process Management
+A **process** is an active entity representing a program in execution, contrasted with a program, which is a passive entity. A process requires resources (CPU, memory, I/O, files) and consists of sections like the text section (program code), program counter, stack (temporary data), data section (global variables), and heap (dynamically allocated memory).
+
+The operating system manages processes by:
+*   Creating and deleting user and system processes.
+*   Suspending and resuming processes.
+*   Providing mechanisms for synchronization, communication, and deadlock handling.
+
+Each process is represented by a **Process Control Block (PCB)**, or Task Control Block, which holds all information required for successful execution, including process state, program counter, CPU registers, CPU scheduling information, memory management information, and I/O status information.
+
+Processes are created (using calls like \`fork()\` in UNIX/Linux) and terminated (using \`exit()\`). Termination releases the process's resources. A parent process can also terminate children (cascading termination) or wait for a child to terminate using \`wait()\`.
+
+**Inter Process Communication (IPC)** allows cooperating processes to share information, speed up computation, achieve modularity, and provide convenience. IPC relies on two main models:
+1.  **Shared Memory:** An area of memory shared among communicating processes, with synchronization mechanisms typically handled by user processes rather than the OS.
+2.  **Message Passing:** Processes communicate using \`send(message)\` and \`receive(message)\` operations, without resorting to shared variables. Communication links can be physical (shared memory, hardware bus, network) or logical (direct/indirect, synchronous/asynchronous, buffered).
+
+**Threads** allow multiple tasks within an application to run concurrently, making applications multithreaded. Thread creation is "light-weight" and cheaper than process creation, offering benefits in responsiveness, resource sharing, economy, and scalability (especially on multiprocessor architectures). Threads exist as user threads (managed by libraries like POSIX Pthreads or Windows threads) and kernel threads (supported by the OS kernel, e.g., Linux, Windows).
+
+#### Memory and Storage Management
+Memory Management involves determining what resides in memory and when, aiming to optimize CPU utilization and response time. Activities include tracking memory usage, deciding which processes/data move into or out of memory, and allocating/deallocating space.
+
+Storage Management provides a uniform, logical view of information storage (the *file*), abstracting physical properties. The OS manages file systems (creating/deleting files/directories, access control, mapping files onto secondary storage, and backup). Mass storage, typically hard disks or Solid-State Disks (SSDs), is managed by the OS through free-space management, storage allocation, and disk scheduling, as the overall speed of computer operation depends heavily on the disk subsystem.
+
+**Caching** is a crucial technique where frequently used information is copied temporarily from slower to faster storage to improve performance.
+
+#### I/O Management
+The I/O subsystem hides the peculiarities of hardware devices from the user. It handles I/O memory management (buffering, caching, spooling) and provides general device-driver interfaces along with specific drivers for hardware devices.
+
+### III. CPU Scheduling Policies
+
+CPU scheduling is necessary to maximize CPU utilization in multiprogramming environments. Process execution follows a CPU–I/O Burst Cycle. Processes transition through states (new, running, waiting, ready, terminated).
+
+**Schedulers** include:
+*   **Long-term scheduler (Job scheduler):** Selects processes for the ready queue; controls the degree of multiprogramming and is invoked infrequently.
+*   **Short-term scheduler (CPU scheduler):** Selects the next process to execute and allocates the CPU; must be very fast as it is invoked frequently.
+*   **Medium-term scheduler:** Handles swapping by moving processes out of and back into memory.
+
+**The Dispatcher** gives control of the CPU to the process selected by the short-term scheduler, performing context switching and jumping to the correct restart location.
+
+**Scheduling Criteria** aim for optimization, typically maximizing CPU utilization and throughput, and minimizing turnaround time, waiting time, and response time. Key formulas include:
+
+*   Turnaround Time (T.A.T) = Completion Time (C.T) – Arrival Time (A.T).
+*   Wait Time (W.T) = T.A.T – Burst Time.
+*   Throughput = Total # of processes / Total Time for execution.
+
+#### Specific Scheduling Algorithms
+
+1.  **First Come First Serve (FCFS):** A non-preemptive policy where the job that arrives first in the ready queue is picked first by the CPU. While easy to implement, it suffers from the **Convoy Effect**, where shorter jobs wait behind long jobs.
+
+2.  **Shortest Job First (SJF):** A non-preemptive policy where the job with the smallest CPU burst time is picked first. **SJF is optimal**, providing the minimum average waiting time for a given set of processes, and avoids the Convoy Effect. The main challenge is predicting the length of the next CPU burst.
+
+3.  **Shortest Remaining Time First (SRTF):** This is the preemptive version of SJF. The CPU is de-allocated as soon as a new job arrives with a smaller remaining burst time. Smaller jobs benefit significantly, but jobs with a bigger burst time may face starvation.
+
+4.  **Priority Scheduling:** A priority number (integer) is associated with each process, and the CPU is allocated to the process with the highest priority (often defined as the smallest integer). It can be preemptive or non-preemptive. SJF is a form of priority scheduling where priority is the inverse of the predicted CPU burst time. The major disadvantage is **starvation** for low-priority processes, which can be solved through **Aging** (increasing the priority of a process as time progresses).
+
+5.  **Round Robin (RR):** A preemptive policy where each process receives a small unit of CPU time, called a time quantum ($q$) (usually 10–100 milliseconds). If the process does not finish within $q$, it is preempted and resubmitted to the ready queue. RR ensures no process starves. The performance depends heavily on the selection of $q$; a large $q$ causes it to behave like FCFS, while a small $q$ increases context switch overhead.
+
+6.  **Multilevel Queues (MLQ):** The ready queue is permanently partitioned into separate queues, often based on process type (e.g., Foreground/Interactive and Background/Batch). Each queue can have its own scheduling algorithm (e.g., RR for foreground, FCFS for background). Scheduling also occurs between queues, typically using fixed priority (which can lead to starvation for lower-priority queues) or a time slice approach.
+
+7.  **Multilevel Feedback Queues (MLFQ):** Similar to MLQ, but processes can move between the queues. This mobility allows aging to be implemented. MLFQ is defined by several parameters, including the number of queues, the scheduling algorithm for each queue, and the methods used to determine when to upgrade or demote a process. The last queue typically uses FCFS.`;
+
+        copyBtn.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(originalContent);
+                copyBtn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = '📋 Copy to Clipboard';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                copyBtn.textContent = '✗ Failed';
+                setTimeout(() => {
+                    copyBtn.textContent = '📋 Copy to Clipboard';
+                }, 2000);
+            }
+        });
+
+        // Print functionality
+        const printBtn = document.getElementById('printBtn');
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        // Smooth scrolling for TOC links
+        document.querySelectorAll('.toc-content a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
